@@ -1,6 +1,5 @@
 package com.example.android.habitstracker.data;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -62,6 +61,9 @@ public class HabitDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // The database is still at version 1, so there's nothing to do be done here.
+        // This technique will wipe out the table every time it is updated
+        // That is hardly practical for apps in production
+        db.execSQL("DROP TABLE IF EXISTS " + HabitEntry.TABLE_NAME);
+        onCreate(db);
     }
 }

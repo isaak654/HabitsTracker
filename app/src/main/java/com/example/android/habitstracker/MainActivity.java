@@ -23,36 +23,16 @@ public class MainActivity extends AppCompatActivity {
         HabitDbHelper mDbHelper = new HabitDbHelper(this);
         // Insert habits records
         insertHabit(mDbHelper);
-        //Read habits records
-        readHabit(mDbHelper);
+        // Read and display habits records
+        displayHabit(mDbHelper);
     }
 
-    /* Helper method to read habits data into the database.*/
-    private void readHabit(HabitDbHelper mDbHelper) {
+    /* Helper method to display habits data from the database.*/
+    private void displayHabit(HabitDbHelper mDbHelper) {
+        // Find the TextView which will be populated
         TextView displayView = (TextView) findViewById(R.id.text_view);
-
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                HabitEntry._ID,
-                HabitEntry.COLUMN_HABIT_NAME,
-                HabitEntry.COLUMN_HABIT_DESC,
-                HabitEntry.COLUMN_HABIT_DURATION,
-                HabitEntry.COLUMN_HABIT_DURATION_UNIT};
-
-        // Perform a query on the habits table
-        Cursor cursor = db.query(
-                HabitEntry.TABLE_NAME,   // The table to query
-                projection,            // The columns to return
-                null,                  // The columns for the WHERE clause
-                null,                  // The values for the WHERE clause
-                null,                  // Don't group the rows
-                null,                  // Don't filter by row groups
-                null);                  // The sort order
-
+        // Call helper method to read habits data
+        Cursor cursor = readData(mDbHelper);
         try {
             // Figure out the index of each column
             int idColumnIndex = cursor.getColumnIndex(HabitEntry._ID);
@@ -84,6 +64,31 @@ public class MainActivity extends AppCompatActivity {
             // resources and makes it invalid.
             cursor.close();
         }
+    }
+
+    /* Helper method to read habits data into the database.*/
+    private Cursor readData(HabitDbHelper mDbHelper) {
+        // Create and/or open a database to read from it
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                HabitEntry._ID,
+                HabitEntry.COLUMN_HABIT_NAME,
+                HabitEntry.COLUMN_HABIT_DESC,
+                HabitEntry.COLUMN_HABIT_DURATION,
+                HabitEntry.COLUMN_HABIT_DURATION_UNIT};
+
+        // Perform a query on the habits table
+        return db.query(
+                HabitEntry.TABLE_NAME,   // The table to query
+                projection,            // The columns to return
+                null,                  // The columns for the WHERE clause
+                null,                  // The values for the WHERE clause
+                null,                  // Don't group the rows
+                null,                  // Don't filter by row groups
+                null);
     }
 
     /* Helper method to insert hardcoded habits data into the database.*/
